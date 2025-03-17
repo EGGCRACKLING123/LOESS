@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote LOESS Trend (Liberals vs Conservatives)</title>
+
+    <!-- ✅ Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <canvas id="pollChart"></canvas>  <!-- Chart Area -->
+
+    <script>
+        // ✅ Polling Data
+        const data = [
+            { date: "2025-03-10", liberals: 37, conservatives: 37 },
+            { date: "2025-03-11", liberals: 42.3, conservatives: 33.3 },
+            { date: "2025-03-12", liberals: 34, conservatives: 38 },
+            { date: "2025-03-13", liberals: 41, conservatives: 39 },
+            { date: "2025-03-13", liberals: 49.5, conservatives: 31.8 },
+            { date: "2025-03-13", liberals: 38, conservatives: 34 }, 
+            { date: "2025-03-13", liberals: 33, conservatives: 39 },   
+            { date: "2025-03-14", liberals: 39, conservatives: 35 },
+            { date: "2025-03-15", liberals: 38, conservatives: 35 },
+        ];
+
+        // ✅ Convert Dates to JavaScript Date Objects
+        data.forEach(d => d.date = new Date(d.date));
+
+        // ✅ Chart.js Setup
+        const ctx = document.getElementById('pollChart').getContext('2d');
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.date.toISOString().split("T")[0]),  // Format dates
+                datasets: [
+                    {
+                        label: "Liberal Vote",
+                        data: data.map(d => d.liberals),
+                        borderColor: "red",
+                        fill: false,
+                        tension: 0.4  // ✅ LOESS-like smooth curve
+                    },
+                    {
+                        label: "Conservatives Vote",
+                        data: data.map(d => d.conservatives),
+                        borderColor: "blue",
+                        fill: false,
+                        tension: 0.4  // ✅ LOESS-like smooth curve
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { type: "category" },  // ✅ Fixed X-Axis
+                    y: { suggestedMin: 30, suggestedMax: 50 }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
