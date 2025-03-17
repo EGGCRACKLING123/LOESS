@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote LOESS Trend (Labour vs National)</title>
+
+    <!-- ✅ Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <canvas id="pollChart"></canvas>  <!-- Chart Area -->
+
+    <script>
+        // ✅ Polling Data
+        const data = [
+            { date: "2025-02-23", labour: 29, national: 30.5 },
+            { date: "2025-03-04", labour: 34.1, national: 33.6 },
+            { date: "2025-03-10", labour: 34, national: 31 },
+        ];
+
+        // ✅ Convert Dates to JavaScript Date Objects
+        data.forEach(d => d.date = new Date(d.date));
+
+        // ✅ Chart.js Setup
+        const ctx = document.getElementById('pollChart').getContext('2d');
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.date.toISOString().split("T")[0]),  // Format dates
+                datasets: [
+                    {
+                        label: "Labour Vote",
+                        data: data.map(d => d.labour),
+                        borderColor: "red",
+                        fill: false,
+                        tension: 0.4  // ✅ LOESS-like smooth curve
+                    },
+                    {
+                        label: "National Vote",
+                        data: data.map(d => d.national),
+                        borderColor: "blue",
+                        fill: false,
+                        tension: 0.4  // ✅ LOESS-like smooth curve
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { type: "category" },  // ✅ Fixed X-Axis
+                    y: { suggestedMin: 48, suggestedMax: 21 }
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
